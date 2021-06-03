@@ -1,17 +1,46 @@
-import React from 'react';
+import React from "react";
+import { Provider } from "react-redux";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
+import store from "./store";
+
+import Signup from "./components/signup";
+import { SnackbarFailure, SnackbarSuccess } from "./components/snackbar";
+import Game from "./components/game";
+import WebsocketProvider from "./websocket/websocket-provider";
+import RedirectRoutes from "./components/redirect";
+import { makeStyles, Container } from "@material-ui/core";
+
+const useStyles = makeStyles({
+  container: {
+    display: "flex",
+    alignItems: "center",
+    height: "100%",
+  },
+});
 
 function App() {
+  const classes = useStyles();
   return (
-    <div style={{ textAlign: 'center' }}>
-      <header>
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Provider store={store}>
+      <WebsocketProvider>
+        <Router>
+          <Container maxWidth="sm" className={classes.container}>
+            <RedirectRoutes />
+            <Switch>
+              <Route exact path="/signup">
+                <Signup />
+              </Route>
+              <Route exact path="/game">
+                <Game />
+              </Route>
+            </Switch>
+          </Container>
+        </Router>
+        <SnackbarSuccess />
+        <SnackbarFailure />
+      </WebsocketProvider>
+    </Provider>
   );
 }
 
