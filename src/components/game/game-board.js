@@ -17,22 +17,29 @@ export default function GameUI() {
       margin="10px"
     >
       {[...new Array(2 * grid.rows + 1)].map((_, i) => (
-        <Box display="flex" width="fit-content">
+        <Box key={i} display="flex" width="fit-content">
           {[...new Array(2 * grid.rows + 1)].map((_, j) =>
             i % 2 === 0 ? (
               // Horizontal Row
               j % 2 === 0 ? (
-                <DotUI dot={new DB.Dot(i / 2, j / 2)} />
+                <DotUI key={j} dot={new DB.Dot(i / 2, j / 2)} />
               ) : (
                 <EdgeUI
+                  key={j}
                   edge={DB.Edge.Horizontal(new DB.Dot(i / 2, (j - 1) / 2))}
                 />
               )
             ) : // Vertical row
             j % 2 === 0 ? (
-              <EdgeUI edge={DB.Edge.Vertical(new DB.Dot((i - 1) / 2, j / 2))} />
+              <EdgeUI
+                key={j}
+                edge={DB.Edge.Vertical(new DB.Dot((i - 1) / 2, j / 2))}
+              />
             ) : (
-              <BoxUI box={new DB.Box(new DB.Dot((i - 1) / 2, (j - 1) / 2))} />
+              <BoxUI
+                key={j}
+                box={new DB.Box(new DB.Dot((i - 1) / 2, (j - 1) / 2))}
+              />
             )
           )}
         </Box>
@@ -84,19 +91,25 @@ function EdgeUI({ edge }) {
   const pending = game.isPendingEdge(edge);
   const playerIndex = game.chosenPlayerIndex(edge);
   const classes = useEdgeStyles({ pending, playerIndex, edge });
-  const clickHandler = useDebouncedCallback(() => {
+
+  const debouncedSendOutgoingMessage = useDebouncedCallback(
+    (message) => sendOutgoingMessage(message),
+    500
+  );
+  const clickHandler = () => {
     // Make move only on your turn
     if (pending && username === game.currentPlayer.username) {
       const newGame = game.makeMove(game.currentPlayer, edge);
       dispatch(updateOnlyGame({ game: newGame }));
-      sendOutgoingMessage({
+      // Debounce while sending to server
+      debouncedSendOutgoingMessage({
         type: "MAKE_MOVE",
         edge_data: edge,
         game_id: gameID,
         session_id: sessionID,
       });
     }
-  }, 500);
+  };
   return (
     <Paper
       className={classes.edge}
