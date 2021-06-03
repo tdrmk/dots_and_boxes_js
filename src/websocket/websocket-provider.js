@@ -18,8 +18,9 @@ import WebsocketConnecting from "./websocket-connecting";
 const WebsocketContext = createContext();
 
 const URI = "wss://enigmatic-cove-96694.herokuapp.com/";
-const HEALTH_URI = "https://enigmatic-cove-96694.herokuapp.com/health";
 // const URI = "ws://localhost:8080";
+
+const HEALTH_URI = "https://enigmatic-cove-96694.herokuapp.com/health";
 const WEBSOCKET_SENDEVENT = "ws:send:message";
 
 export default function WebsocketProvider({ children }) {
@@ -53,7 +54,6 @@ export default function WebsocketProvider({ children }) {
     game.gameID,
     game.loading,
   ]);
-  console.log(userRef, gameRef);
 
   const createWebSocket = () => {
     // New WebSocket
@@ -117,7 +117,6 @@ export default function WebsocketProvider({ children }) {
 
 function processIncomingMessages(message, dispatch, userRef, gameRef) {
   console.log("Got message from server:", message);
-  console.log("FEF", userRef, gameRef);
   switch (message.type) {
     case "AUTHENTICATED":
       {

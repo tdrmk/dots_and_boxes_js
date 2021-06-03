@@ -45,7 +45,6 @@ export default function Signup(props) {
   const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
-    console.log(e);
     e.preventDefault();
     if (!password) {
       dispatch(snackbarFailure("Please enter password"));

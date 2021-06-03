@@ -47,7 +47,6 @@ export default function ScoreBoard() {
 
 function PlayerScore({ playerIndex }) {
   const { game, playerStatus } = useSelector((state) => state.game);
-  console.log(playerStatus);
   const player = game.players[playerIndex];
   const turn = game.turn;
 

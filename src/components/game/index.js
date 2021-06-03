@@ -30,7 +30,6 @@ export default function Game() {
   const classes = useStyles();
   const { gameID, loading, game } = useSelector((state) => state.game);
   if (!gameID) {
-    console.log("Not game UI", loading, gameID);
     return (
       <Box className={classes.gameBox}>
         {loading ? (
