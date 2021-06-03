@@ -44,8 +44,8 @@ export default function Signup(props) {
   const [passwordError, setPasswordError] = useState("");
   const dispatch = useDispatch();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleClick = (type, event) => {
+    event.preventDefault();
     if (!password) {
       dispatch(snackbarFailure("Please enter password"));
     } else if (passwordError) {
@@ -54,28 +54,12 @@ export default function Signup(props) {
       dispatch(snackbarFailure("Please enter username"));
     } else if (usernameError) {
       dispatch(snackbarFailure("Invalid Username"));
-    } else {
-      // login allowed
-      switch (e.nativeEvent.submitter.name) {
-        case "signup": {
-          sendOutgoingMessage({
-            type: "SIGN_UP",
-            username,
-            password,
-          });
-          break;
-        }
-        case "login": {
-          sendOutgoingMessage({
-            type: "LOGIN",
-            username,
-            password,
-          });
-          break;
-        }
-        default:
-          console.log("Unknown submitter", e.nativeEvent.submitter.name);
-      }
+    } else if (type === "SIGN_UP" || type === "LOGIN") {
+      sendOutgoingMessage({
+        type,
+        username,
+        password,
+      });
     }
   };
 
@@ -110,7 +94,7 @@ export default function Signup(props) {
 
   return (
     <Container maxWidth="xs">
-      <form noValidate autoComplete="off" onSubmit={handleSubmit}>
+      <form noValidate autoComplete="off">
         <TextField
           onChange={handleChange}
           className={classes.field}
@@ -148,17 +132,15 @@ export default function Signup(props) {
         >
           <Button
             color="primary"
-            type="submit"
-            name="signup"
             startIcon={<PersonAddIcon />}
+            onClick={handleClick.bind(null, "SIGN_UP")}
           >
             Sign Up
           </Button>
           <Button
             color="secondary"
-            type="submit"
-            name="login"
             endIcon={<ArrowForwardIcon />}
+            onClick={handleClick.bind(null, "LOGIN")}
           >
             Login
           </Button>
