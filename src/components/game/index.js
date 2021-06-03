@@ -11,6 +11,7 @@ import NewGameModal from "./new-game-modal";
 import GameUI from "./game-board";
 import ScoreBoard from "./score-board";
 import GameOverModal from "./game-over-modal";
+import ExitGame from "./exit-game";
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -55,6 +56,7 @@ export default function Game() {
 
   return (
     <Box className={classes.gameBox}>
+      <ExitGame />
       <GameUI />
       <ScoreBoard />
       <GameOverModal open={game.gameOver} />
