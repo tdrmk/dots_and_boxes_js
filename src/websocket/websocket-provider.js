@@ -166,6 +166,9 @@ function processIncomingMessages(message, dispatch, userRef, gameRef) {
     case "GAME_EXPIRED":
       {
         const gameID = message.game_id;
+        if (gameRef.current.gameID === gameID) {
+          dispatch(snackbarFailure("Game expired!"));
+        }
         dispatch(gameExpired({ gameID }));
       }
       break;
