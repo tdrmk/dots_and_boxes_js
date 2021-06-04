@@ -281,4 +281,8 @@ export class DotsAndBoxes {
       )
     );
   }
+
+  isLastMove(edge: Edge): boolean {
+    return `${edge}` === `${this.lastMove}`;
+  }
 }

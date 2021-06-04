@@ -67,6 +67,8 @@ const useEdgeStyles = makeStyles((theme) => ({
     height: props.edge.vertical ? theme.spacing(8) : theme.spacing(2),
     background: props.pending
       ? theme.palette.grey["200"]
+      : props.isLastMove
+      ? theme.palette.success.main
       : props.playerIndex === 0
       ? theme.palette.primary.main
       : theme.palette.secondary.main,
@@ -90,7 +92,13 @@ function EdgeUI({ edge }) {
   const dispatch = useDispatch();
   const pending = game.isPendingEdge(edge);
   const playerIndex = game.chosenPlayerIndex(edge);
-  const classes = useEdgeStyles({ pending, playerIndex, edge });
+  const isLastMove = game.isLastMove(edge);
+  const classes = useEdgeStyles({
+    pending,
+    playerIndex,
+    edge,
+    isLastMove,
+  });
 
   const debouncedSendOutgoingMessage = useDebouncedCallback(
     (message) => sendOutgoingMessage(message),
