@@ -28,6 +28,9 @@ const WEBSOCKET_SENDEVENT = "ws:send:message";
 export default function WebsocketProvider({ children }) {
   // Main state
   const [websocket, setWebsocket] = useState();
+  // is set when connection is closed first time
+  const [reconnect, setReconnect] = useState(false);
+
   const dispatch = useDispatch();
   // Maintain references to latest values of user and game state
   // https://medium.com/geographit/accessing-react-state-in-event-listeners-with-usestate-and-useref-hooks-8cceee73c559
@@ -57,12 +60,22 @@ export default function WebsocketProvider({ children }) {
     game.loading,
   ]);
 
-  const createWebSocket = () => {
+  const createWebSocket = (reconnect = false) => {
     // New WebSocket
     const websocket = new WebSocket(URI);
     // WebSocket related event handlers
     const openHandler = () => {
       setWebsocket(websocket);
+      if (reconnect && userRef.current.userID) {
+        // In case user was already logged in
+        // attempt login again, in case if successful, and if game exists
+        // it will attempt joining it back
+        sendOutgoingMessage({
+          type: "LOGIN",
+          username: userRef.current.username,
+          password: userRef.current.password,
+        });
+      }
     };
     const messageHandler = (event) => {
       // Process message
@@ -83,6 +96,7 @@ export default function WebsocketProvider({ children }) {
     const closeHandler = () => {
       // Unset the websocket state
       setWebsocket();
+      setReconnect(true); // Subsequent connections will be treated as reconnects ...
       websocket.removeEventListener("open", openHandler);
       websocket.removeEventListener("message", messageHandler);
       websocket.removeEventListener("close", closeHandler);
@@ -101,8 +115,10 @@ export default function WebsocketProvider({ children }) {
     if (!websocket) {
       // Create a websocket when not available
       // Note: Reconnects if existing websocket is closed
-      console.log("[use effect] Creating a new websocket...");
-      createWebSocket();
+      console.log(
+        `[use effect] Creating a new websocket (reconnect: ${reconnect})...`
+      );
+      createWebSocket(reconnect);
       return;
     }
     console.log("[use effect] Websocket updated!");
