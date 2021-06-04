@@ -18,6 +18,7 @@ import {
 import { snackbarFailure } from "../reducers/snackbar";
 import { credentials } from "../reducers/user";
 import { sendOutgoingMessage } from "../websocket/websocket-provider";
+import Cookies from "js-cookie";
 
 const USERNAME_REGEX = /^\w{4,9}$/;
 const PASSWORD_REGEX = /^\w{4,9}$/;
@@ -38,9 +39,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Signup(props) {
   const classes = useStyles();
-  const [username, setUsername] = useState("");
+  // Load initial state from cookies if any was saved previously
+  const [username, setUsername] = useState(() => Cookies.get("username") ?? "");
+  const [password, setPassword] = useState(() => Cookies.get("password") ?? "");
+
   const [usernameError, setUsernameError] = useState("");
-  const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const dispatch = useDispatch();
 

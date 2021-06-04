@@ -18,6 +18,14 @@ export const gameSlice = createSlice({
       state.playerStatus = null;
       state.error = null;
     },
+    clearGame: (state) => {
+      // Resets back to initial state
+      state.loading = false;
+      state.game = DotsAndBoxes.New();
+      state.gameID = null;
+      state.playerStatus = null;
+      state.error = null;
+    },
     game: (state, action) => {
       state.loading = false;
       state.error = null;
@@ -59,5 +67,6 @@ export const {
   playerStatus,
   gameExpired,
   unauthorized,
+  clearGame,
 } = gameSlice.actions;
 export default gameSlice.reducer;

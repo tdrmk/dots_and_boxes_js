@@ -10,6 +10,7 @@ import Game from "./components/game";
 import WebsocketProvider from "./websocket/websocket-provider";
 import RedirectRoutes from "./components/redirect";
 import { makeStyles, Container } from "@material-ui/core";
+import CookieProvider from "./utils/cookies";
 
 const useStyles = makeStyles({
   container: {
@@ -24,19 +25,22 @@ function App() {
   return (
     <Provider store={store}>
       <WebsocketProvider>
-        <Router>
-          <Container maxWidth="sm" className={classes.container}>
-            <RedirectRoutes />
-            <Switch>
-              <Route exact path="/signup">
-                <Signup />
-              </Route>
-              <Route exact path="/game">
-                <Game />
-              </Route>
-            </Switch>
-          </Container>
-        </Router>
+        <CookieProvider>
+          <Router>
+            <Container maxWidth="sm" className={classes.container}>
+              <RedirectRoutes />
+              <Switch>
+                <Route exact path="/signup">
+                  <Signup />
+                </Route>
+                <Route exact path="/game">
+                  <Game />
+                </Route>
+              </Switch>
+            </Container>
+          </Router>
+        </CookieProvider>
+
         <SnackbarSuccess />
         <SnackbarFailure />
       </WebsocketProvider>

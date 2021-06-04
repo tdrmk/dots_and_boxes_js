@@ -12,7 +12,9 @@ import {
   playerStatus as updatePlayerStatus,
   gameExpired,
   unauthorized,
+  clearGame,
 } from "../reducers/game";
+import Cookies from "js-cookie";
 import WebsocketConnecting from "./websocket-connecting";
 
 const WebsocketContext = createContext();
@@ -117,6 +119,7 @@ export default function WebsocketProvider({ children }) {
 
 function processIncomingMessages(message, dispatch, userRef, gameRef) {
   console.log("Got message from server:", message);
+  updateCookiesOnIncomingMessages(message, userRef, gameRef);
   switch (message.type) {
     case "AUTHENTICATED":
       {
@@ -139,6 +142,8 @@ function processIncomingMessages(message, dispatch, userRef, gameRef) {
         const error = message.error;
         // TODO: Handle it gracefully, if triggered post initial login
         dispatch(unauthenticated({ error }));
+        // Also clear any game if any on unauthenticated...
+        dispatch(clearGame());
         dispatch(snackbarFailure(error));
       }
       break;
@@ -194,7 +199,57 @@ function processIncomingMessages(message, dispatch, userRef, gameRef) {
 
 export function sendOutgoingMessage(message) {
   console.log("Dispatching custom event", message);
+  updateCookiesOnOutgoingMessages(message);
   window.dispatchEvent(
     new CustomEvent(WEBSOCKET_SENDEVENT, { detail: message })
   );
+}
+
+function updateCookiesOnOutgoingMessages(message) {
+  switch (message.type) {
+    case "SIGN_UP":
+    case "LOGIN":
+      Cookies.set("username", message.username);
+      Cookies.set("password", message.password);
+      Cookies.remove("user_id");
+      break;
+    case "LOGOUT":
+      Cookies.remove("user_id");
+      break;
+    case "JOIN_GAME":
+    case "EXIT_GAME":
+      Cookies.remove("game_id");
+      break;
+    case "RESET_GAME":
+      Cookies.set("game_id", message.game_id, { expires: 1 / 144 });
+      break;
+    default:
+      break;
+  }
+}
+
+function updateCookiesOnIncomingMessages(message, userRef, gameRef) {
+  switch (message.type) {
+    case "AUTHENTICATED":
+      Cookies.set("user_id", message.user_id);
+      break;
+    case "UNAUTHENTICATED":
+      Cookies.remove("user_id");
+      // Remove stale game id if any
+      Cookies.remove("game_id");
+      break;
+    case "GAME":
+      Cookies.set("game_id", message.game_id, { expires: 1 / 144 });
+      break;
+    case "GAME_EXPIRED":
+      if (gameRef.current.gameID === message.game_id) {
+        Cookies.remove("game_id");
+      }
+      break;
+    case "UNAUTHORIZED":
+      Cookies.remove("game_id");
+      break;
+    default:
+      break;
+  }
 }
