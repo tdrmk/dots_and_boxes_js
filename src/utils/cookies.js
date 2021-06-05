@@ -8,9 +8,16 @@ export default function CookieProvider({ children }) {
   const dispatch = useDispatch();
   // Get the initial game
   const { game } = useSelector((state) => state.game);
+  const { sessionID } = useSelector((state) => state.user);
 
   // Only run on initial render
   useEffect(() => {
+    if (sessionID) {
+      // In case of existing session, don't send login message.
+      // This is to fix the ACTIVE_CONNECTION UNAUTHENTICATED
+      // response from server
+      return;
+    }
     // Cookie states
     const gameID = Cookies.get("game_id");
     const username = Cookies.get("username");
