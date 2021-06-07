@@ -225,8 +225,8 @@ function updateCookiesOnOutgoingMessages(message) {
   switch (message.type) {
     case "SIGN_UP":
     case "LOGIN":
-      Cookies.set("username", message.username);
-      Cookies.set("password", message.password);
+      Cookies.set("username", message.username, { expires: 365 });
+      Cookies.set("password", message.password, { expires: 365 });
       Cookies.remove("user_id");
       break;
     case "LOGOUT":
@@ -247,7 +247,7 @@ function updateCookiesOnOutgoingMessages(message) {
 function updateCookiesOnIncomingMessages(message, userRef, gameRef) {
   switch (message.type) {
     case "AUTHENTICATED":
-      Cookies.set("user_id", message.user_id);
+      Cookies.set("user_id", message.user_id, { expires: 365 });
       break;
     case "UNAUTHENTICATED":
       Cookies.remove("user_id");
