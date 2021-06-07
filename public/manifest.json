@@ -1,0 +1,37 @@
+{
+  "name": "Dots And Boxes",
+  "short_name": "Dots N Boxes",
+  "description": "Online two player Dots and Boxes game",
+  "start_url": "/game",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FFFFFF",
+  "icons": [
+    {
+      "src": "/images/icons-72x72.png",
+      "type": "image/png",
+      "sizes": "72x72"
+    },
+    {
+      "src": "/images/icons-96x96.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "/images/icons-128x128.png",
+      "type": "image/png",
+      "sizes": "128x128"
+    },
+    {
+      "src": "/images/icons-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/images/icons-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
