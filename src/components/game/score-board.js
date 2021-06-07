@@ -32,7 +32,7 @@ export default function ScoreBoard() {
           color={turn === 0 ? "primary" : "secondary"}
         >
           {username === game.currentPlayer.username
-            ? `your turn to make a move`
+            ? `your turn, TAP on a line to make your move`
             : `wait for your turn, its ${game.currentPlayer.username} move`}
         </Typography>
       </Box>
