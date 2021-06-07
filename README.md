@@ -6,6 +6,8 @@ This is a JS client.
 
 Server is implemented in [dots_and_boxes](https://github.com/tdrmk/dots_and_boxes) repo.
 
+![Sample image](game.png)
+
 #### Cookies
 
 To prevent game abandonment resulting from user refreshing the browser, cookies are used to persist session information across browser sessions.
